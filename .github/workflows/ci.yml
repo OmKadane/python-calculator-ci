@@ -1,6 +1,5 @@
 name: Python CI
 
-# Triggers the workflow on push or pull request events for the main or master branch
 on:
   push:
     branches: [ main, master ]
@@ -12,16 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Sets up the Python version
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # Runs the built-in unittest discovery
-      - name: Run tests
-        run: python -m unittest discover
+      # Install the coverage package
+      - name: Install dependencies
+        run: pip install coverage
+
+      # Run tests with coverage and enforce minimum coverage of 80%
+      - name: Run tests and generate coverage report
+        run: |
+          coverage run -m unittest discover
+          coverage report --fail-under=80
